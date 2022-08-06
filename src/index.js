@@ -40,8 +40,12 @@ export default class VueRouter {
 
   constructor (options: RouterOptions = {}) {
     if (process.env.NODE_ENV !== 'production') {
-      warn(this instanceof VueRouter, `Router must be called with the new operator.`)
+      warn(
+        this instanceof VueRouter,
+        `Router must be called with the new operator.`
+      )
     }
+    // vue 根实例
     this.app = null
     this.apps = []
     this.options = options
@@ -50,10 +54,13 @@ export default class VueRouter {
     this.afterHooks = []
     this.matcher = createMatcher(options.routes || [], this)
 
+    // 默认 hash 模式
     let mode = options.mode || 'hash'
+    // 浏览器是否支持 history.pushState
     this.fallback =
       mode === 'history' && !supportsPushState && options.fallback !== false
     if (this.fallback) {
+      // 回退到 hash 模式
       mode = 'hash'
     }
     if (!inBrowser) {
@@ -86,6 +93,7 @@ export default class VueRouter {
     return this.history && this.history.current
   }
 
+  // beforeCreate 中被调用
   init (app: any /* Vue component instance */) {
     process.env.NODE_ENV !== 'production' &&
       assert(
@@ -94,6 +102,7 @@ export default class VueRouter {
           `before creating root instance.`
       )
 
+    // 把 vue 实例存到 apps 中
     this.apps.push(app)
 
     // set up app destroyed handler
@@ -109,12 +118,12 @@ export default class VueRouter {
       if (!this.app) this.history.teardown()
     })
 
-    // main app previously initialized
-    // return as we don't need to set up new history listener
+    // 主应用程序之前已初始化 就return，因为不需要设置新的历史侦听器
     if (this.app) {
       return
     }
 
+    // 根 Vue 实例会保存到 this.app
     this.app = app
 
     const history = this.history
@@ -261,7 +270,10 @@ export default class VueRouter {
 
   addRoutes (routes: Array<RouteConfig>) {
     if (process.env.NODE_ENV !== 'production') {
-      warn(false, 'router.addRoutes() is deprecated and has been removed in Vue Router 4. Use router.addRoute() instead.')
+      warn(
+        false,
+        'router.addRoutes() is deprecated and has been removed in Vue Router 4. Use router.addRoute() instead.'
+      )
     }
     this.matcher.addRoutes(routes)
     if (this.history.current !== START) {
@@ -283,6 +295,7 @@ function createHref (base: string, fullPath: string, mode) {
   return base ? cleanPath(base + '/' + path) : path
 }
 
+// 作为vue的插件
 VueRouter.install = install
 VueRouter.version = '__VERSION__'
 VueRouter.isNavigationFailure = isNavigationFailure
@@ -290,5 +303,6 @@ VueRouter.NavigationFailureType = NavigationFailureType
 VueRouter.START_LOCATION = START
 
 if (inBrowser && window.Vue) {
+  // src方式引用
   window.Vue.use(VueRouter)
 }

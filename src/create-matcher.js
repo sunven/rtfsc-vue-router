@@ -17,9 +17,10 @@ export type Matcher = {
 };
 
 export function createMatcher (
-  routes: Array<RouteConfig>,
-  router: VueRouter
+  routes: Array<RouteConfig>, // 路由表
+  router: VueRouter // 路由实例
 ): Matcher {
+  // 路由映射表
   const { pathList, pathMap, nameMap } = createRouteMap(routes)
 
   function addRoutes (routes) {
@@ -48,19 +49,23 @@ export function createMatcher (
     return pathList.map(path => pathMap[path])
   }
 
+  // 据传入的 raw 和当前的路径 currentRoute 计算出一个新的路径并返回
   function match (
-    raw: RawLocation,
+    raw: RawLocation, // string 或者 location
     currentRoute?: Route,
     redirectedFrom?: Location
   ): Route {
+    // 根据 raw，current 计算出新的 location
     const location = normalizeLocation(raw, currentRoute, false, router)
     const { name } = location
 
     if (name) {
+      // 如果有名字，取出路由记录
       const record = nameMap[name]
       if (process.env.NODE_ENV !== 'production') {
         warn(record, `Route with name '${name}' does not exist`)
       }
+      // record 为空，返回一个空route
       if (!record) return _createRoute(null, location)
       const paramNames = record.regex.keys
         .filter(key => !key.optional)

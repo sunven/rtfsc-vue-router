@@ -13,6 +13,7 @@ export function normalizeLocation (
   append: ?boolean,
   router: ?VueRouter
 ): Location {
+  // raw是string 转化为location
   let next: Location = typeof raw === 'string' ? { path: raw } : raw
   // named target
   if (next._normalized) {
@@ -28,10 +29,12 @@ export function normalizeLocation (
 
   // relative params
   if (!next.path && next.params && current) {
+    // 没有 path 有 params 有 current
     next = extend({}, next)
     next._normalized = true
     const params: any = extend(extend({}, current.params), next.params)
     if (current.name) {
+      // 当前路由有名字
       next.name = current.name
       next.params = params
     } else if (current.matched.length) {

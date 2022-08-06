@@ -16,12 +16,17 @@ export function createRouteMap (
   nameMap: Dictionary<RouteRecord>
 } {
   // the path list is used to control path matching priority
+  // 存储所有 path
+  // 路径列表用于控制路径匹配优先级
   const pathList: Array<string> = oldPathList || []
+  // path 到 RouteRecord 的映射关系
   // $flow-disable-line
   const pathMap: Dictionary<RouteRecord> = oldPathMap || Object.create(null)
+  // name 到 RouteRecord 的映射关系
   // $flow-disable-line
   const nameMap: Dictionary<RouteRecord> = oldNameMap || Object.create(null)
 
+  // 为每一个 route 生成一条记录
   routes.forEach(route => {
     addRouteRecord(pathList, pathMap, nameMap, route, parentRoute)
   })
