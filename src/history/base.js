@@ -51,6 +51,7 @@ export class History {
     this.router = router
     this.base = normalizeBase(base)
     // start with a route object that stands for "nowhere"
+    // 最开始的路由是 /
     this.current = START
     this.pending = null
     this.ready = false
@@ -79,7 +80,7 @@ export class History {
     this.errorCbs.push(errorCb)
   }
 
-  // init 调用
+  // router init 调用
   transitionTo (
     location: RawLocation,
     onComplete?: Function,
@@ -88,6 +89,7 @@ export class History {
     let route
     // catch redirect option https://github.com/vuejs/vue-router/issues/3201
     try {
+      // 匹配到route
       route = this.router.match(location, this.current)
     } catch (e) {
       this.errorCbs.forEach(cb => {
@@ -181,22 +183,30 @@ export class History {
 
     const queue: Array<?NavigationGuard> = [].concat(
       // in-component leave guards
+      // 在失活的组件里调用离开守卫
       extractLeaveGuards(deactivated),
       // global before hooks
+      // 调用全局的 beforeEach 守卫
       this.router.beforeHooks,
       // in-component update hooks
+      // 在重用的组件里调用 beforeRouteUpdate 守卫
       extractUpdateHooks(updated),
       // in-config enter guards
+      // 在激活的路由配置里调用 beforeEnter
       activated.map(m => m.beforeEnter),
       // async components
+      // 解析异步路由组件
       resolveAsyncComponents(activated)
     )
 
+    // next 相当于回调，下一个
     const iterator = (hook: NavigationGuard, next) => {
       if (this.pending !== route) {
         return abort(createNavigationCancelledError(current, route))
       }
       try {
+        // 导航守卫 hook
+        // 文档中的to、from、next
         hook(route, current, (to: any) => {
           if (to === false) {
             // next(false) -> abort navigation, ensure current URL
@@ -219,6 +229,7 @@ export class History {
             }
           } else {
             // confirm transition and pass on the value
+            // 执行了to 也就是文档中的next,才会执行下面的next,才会继续后面的hook
             next(to)
           }
         })
@@ -227,6 +238,7 @@ export class History {
       }
     }
 
+    // 用iterator方法，依次执行queue中的每一次
     runQueue(queue, iterator, () => {
       // wait until async components are resolved before
       // extracting in-component enter guards
@@ -299,16 +311,21 @@ function resolveQueue (
   activated: Array<RouteRecord>,
   deactivated: Array<RouteRecord>
 } {
+  // 路径是由 current 变向 route
   let i
   const max = Math.max(current.length, next.length)
   for (i = 0; i < max; i++) {
     if (current[i] !== next[i]) {
+      // 找到不一样的点 i
       break
     }
   }
   return {
+    // next 中从 0 到 i 的 RouteRecord 是两边都一样，则为 updated 的部分
     updated: next.slice(0, i),
+    // 从 i 到最后的 RouteRecord 是 next 独有的，为 activated 的部分
     activated: next.slice(i),
+    // 而 current 中从 i 到最后的 RouteRecord 则没有了，为 deactivated 的部分
     deactivated: current.slice(i)
   }
 }

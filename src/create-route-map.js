@@ -31,7 +31,7 @@ export function createRouteMap (
     addRouteRecord(pathList, pathMap, nameMap, route, parentRoute)
   })
 
-  // ensure wildcard routes are always at the end
+  // 确保通配符路由始终位于末尾
   for (let i = 0, l = pathList.length; i < l; i++) {
     if (pathList[i] === '*') {
       pathList.push(pathList.splice(i, 1)[0])

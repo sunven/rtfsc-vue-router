@@ -48,6 +48,7 @@ declare type RouterOptions = {
 
 declare type RedirectOption = RawLocation | ((to: Route) => RawLocation)
 
+// 初始化路由传入的routes
 declare type RouteConfig = {
   path: string;
   name?: string;
@@ -63,6 +64,7 @@ declare type RouteConfig = {
   pathToRegexpOptions?: PathToRegexpOptions; // 编译正则的选项
 }
 
+// 路由映射
 declare type RouteRecord = {
   path: string;
   alias: Array<string>;
@@ -92,6 +94,7 @@ declare type Location = {
 
 declare type RawLocation = string | Location
 
+// this.route
 declare type Route = {
   path: string;
   name: ?string;

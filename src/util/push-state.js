@@ -26,8 +26,6 @@ export const supportsPushState =
 export function pushState (url?: string, replace?: boolean) {
   saveScrollPosition()
   // try...catch pushState 调用以绕过 Safari DOM Exception 18，它限制为 100 个 pushState 调用
-  // 1 创建新的历史记录
-  // 2 不会调用hashchange
   const history = window.history
   try {
     if (replace) {
@@ -36,9 +34,14 @@ export function pushState (url?: string, replace?: boolean) {
       stateCopy.key = getStateKey()
       history.replaceState(stateCopy, '', url)
     } else {
+      // pushState
+      // 1 创建新的历史记录
+      // 2 不会调用hashchange
       history.pushState({ key: setStateKey(genStateKey()) }, '', url)
     }
   } catch (e) {
+    // replace
+    // 没有历史记录
     window.location[replace ? 'replace' : 'assign'](url)
   }
 }
