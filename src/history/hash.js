@@ -19,6 +19,7 @@ export class HashHistory extends History {
 
   // this is delayed until the app mounts
   // to avoid the hashchange listener being fired too early
+  // 这会延迟到应用程序挂载，以避免 hashchange 侦听器被过早触发
   setupListeners () {
     if (this.listeners.length > 0) {
       return
@@ -111,10 +112,14 @@ function ensureSlash (): boolean {
   if (path.charAt(0) === '/') {
     return true
   }
+  // has 不是 /开头
+  // 比如：http://localhost:8080
+  // 会自动改为 http://localhost:8080/#/
   replaceHash('/' + path)
   return false
 }
 
+// 返回 # 号后面的
 export function getHash (): string {
   // We can't use window.location.hash here because it's not
   // consistent across browsers - Firefox will pre-decode it!

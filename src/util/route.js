@@ -54,6 +54,7 @@ export const START = createRoute(null, {
 })
 
 function formatMatch (record: ?RouteRecord): Array<RouteRecord> {
+  // 向上递归
   const res = []
   while (record) {
     res.unshift(record)

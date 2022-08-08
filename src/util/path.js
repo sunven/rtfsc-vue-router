@@ -70,5 +70,8 @@ export function parsePath (path: string): {
 }
 
 export function cleanPath (path: string): string {
+  // ?: 非获取匹配，不进行存储供以后使用
+  // 两个斜杠或者 两个斜杠间都是\s 替换为 /
+  // e.g.: // , /    /
   return path.replace(/\/(?:\s*\/)+/g, '/')
 }

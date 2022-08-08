@@ -16,6 +16,7 @@ export const supportsPushState =
       ua.indexOf('Chrome') === -1 &&
       ua.indexOf('Windows Phone') === -1
     ) {
+      // 不支持pushState
       return false
     }
 
@@ -24,8 +25,9 @@ export const supportsPushState =
 
 export function pushState (url?: string, replace?: boolean) {
   saveScrollPosition()
-  // try...catch the pushState call to get around Safari
-  // DOM Exception 18 where it limits to 100 pushState calls
+  // try...catch pushState 调用以绕过 Safari DOM Exception 18，它限制为 100 个 pushState 调用
+  // 1 创建新的历史记录
+  // 2 不会调用hashchange
   const history = window.history
   try {
     if (replace) {

@@ -218,8 +218,8 @@ function normalizePath (
   parent?: RouteRecord,
   strict?: boolean
 ): string {
-  if (!strict) path = path.replace(/\/$/, '')
+  if (!strict) path = path.replace(/\/$/, '') // 去掉末尾 /
   if (path[0] === '/') return path
   if (parent == null) return path
-  return cleanPath(`${parent.path}/${path}`)
+  return cleanPath(`${parent.path}/${path}`) // 拼接父path
 }

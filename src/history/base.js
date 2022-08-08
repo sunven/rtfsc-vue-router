@@ -79,6 +79,7 @@ export class History {
     this.errorCbs.push(errorCb)
   }
 
+  // init 调用
   transitionTo (
     location: RawLocation,
     onComplete?: Function,
@@ -123,7 +124,10 @@ export class History {
           // because it's triggered by the redirection instead
           // https://github.com/vuejs/vue-router/issues/3225
           // https://github.com/vuejs/vue-router/issues/3331
-          if (!isNavigationFailure(err, NavigationFailureType.redirected) || prev !== START) {
+          if (
+            !isNavigationFailure(err, NavigationFailureType.redirected) ||
+            prev !== START
+          ) {
             this.ready = true
             this.readyErrorCbs.forEach(cb => {
               cb(err)
@@ -353,9 +357,7 @@ function bindGuard (guard: NavigationGuard, instance: ?_Vue): ?NavigationGuard {
   }
 }
 
-function extractEnterGuards (
-  activated: Array<RouteRecord>
-): Array<?Function> {
+function extractEnterGuards (activated: Array<RouteRecord>): Array<?Function> {
   return extractGuards(
     activated,
     'beforeRouteEnter',
