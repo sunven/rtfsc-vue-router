@@ -59,8 +59,8 @@ declare type RouteConfig = {
   beforeEnter?: NavigationGuard;
   meta?: any;
   props?: boolean | Object | Function;
-  caseSensitive?: boolean;
-  pathToRegexpOptions?: PathToRegexpOptions;
+  caseSensitive?: boolean; // 匹配规则是否大小写敏感？(默认值：false)
+  pathToRegexpOptions?: PathToRegexpOptions; // 编译正则的选项
 }
 
 declare type RouteRecord = {

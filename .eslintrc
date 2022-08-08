@@ -1,10 +1,8 @@
 {
   "root": true,
-  "plugins": [
-    "flowtype"
-  ],
-  "extends": [
-    "plugin:vue-libs/recommended",
-    "plugin:flowtype/recommended"
-  ]
+  "plugins": ["flowtype"],
+  "extends": ["plugin:vue-libs/recommended", "plugin:flowtype/recommended"],
+  "rules": {
+    "flowtype/no-types-missing-file-annotation": 0
+  }
 }
