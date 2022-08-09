@@ -11,12 +11,10 @@ export function resolveAsyncComponents (matched: Array<RouteRecord>): Function {
     let error = null
 
     flatMapComponents(matched, (def, _, match, key) => {
-      // if it's a function and doesn't have cid attached,
-      // assume it's an async component resolve function.
-      // we are not using Vue's default async resolving mechanism because
-      // we want to halt the navigation until the incoming component has been
-      // resolved.
+      // 如果它是一个函数并且没有附加 cid，则假设它是一个异步组件解析函数。
+      // 我们没有使用 Vue 的默认异步解析机制，因为我们想暂停导航，直到传入的组件被解析
       if (typeof def === 'function' && def.cid === undefined) {
+        // 异步组件
         hasAsync = true
         pending++
 
@@ -70,19 +68,21 @@ export function resolveAsyncComponents (matched: Array<RouteRecord>): Function {
   }
 }
 
+// components 命名视图 多个route-vew 非嵌套
 export function flatMapComponents (
   matched: Array<RouteRecord>,
   fn: Function
 ): Array<?Function> {
   return flatten(matched.map(m => {
     return Object.keys(m.components).map(key => fn(
-      m.components[key],
-      m.instances[key],
+      m.components[key], // 组件
+      m.instances[key], // router-view 实例
       m, key
     ))
   }))
 }
 
+// 二维数组变一维数组
 export function flatten (arr: Array<any>): Array<any> {
   return Array.prototype.concat.apply([], arr)
 }

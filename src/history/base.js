@@ -182,19 +182,14 @@ export class History {
     )
 
     const queue: Array<?NavigationGuard> = [].concat(
-      // in-component leave guards
-      // 在失活的组件里调用离开守卫
+      // 在失活的组件里调用离开守卫 就是获取beforeRouteLeave函数
       extractLeaveGuards(deactivated),
-      // global before hooks
       // 调用全局的 beforeEach 守卫
       this.router.beforeHooks,
-      // in-component update hooks
-      // 在重用的组件里调用 beforeRouteUpdate 守卫
+      // 在重用的组件里调用 beforeRouteUpdate 函数
       extractUpdateHooks(updated),
-      // in-config enter guards
-      // 在激活的路由配置里调用 beforeEnter
+      // 在激活的路由beforeEnter 即：RouteConfig 的 beforeEnter
       activated.map(m => m.beforeEnter),
-      // async components
       // 解析异步路由组件
       resolveAsyncComponents(activated)
     )
@@ -229,7 +224,7 @@ export class History {
             }
           } else {
             // confirm transition and pass on the value
-            // 执行了to 也就是文档中的next,才会执行下面的next,才会继续后面的hook
+            // 执行了(to)=>{} 也就是文档中的next,才会执行下面的next,才会继续后面的hook
             next(to)
           }
         })
@@ -238,11 +233,13 @@ export class History {
       }
     }
 
-    // 用iterator方法，依次执行queue中的每一次
+    // 执行iterator方法，queue中的每一项为参数
     runQueue(queue, iterator, () => {
       // wait until async components are resolved before
       // extracting in-component enter guards
+      // 在激活的组件里调用组件的beforeRouteEnter
       const enterGuards = extractEnterGuards(activated)
+      // 调用全局的 beforeResolve
       const queue = enterGuards.concat(this.router.resolveHooks)
       runQueue(queue, iterator, () => {
         if (this.pending !== route) {
@@ -353,19 +350,30 @@ function extractGuard (
 ): NavigationGuard | Array<NavigationGuard> {
   if (typeof def !== 'function') {
     // extend now so that global mixins are applied.
+    // 组件配置
     def = _Vue.extend(def)
   }
+  // 获取钩子函数
   return def.options[key]
 }
 
+// 组件:beforeRouteLeave
+// 在导航离开渲染该组件的对应路由时调用
+// 与 `beforeRouteUpdate` 一样，它可以访问组件实例 `this`
 function extractLeaveGuards (deactivated: Array<RouteRecord>): Array<?Function> {
   return extractGuards(deactivated, 'beforeRouteLeave', bindGuard, true)
 }
 
+// 组件:beforeRouteUpdate
+// 在当前路由改变，但是该组件被复用时调用
+// 举例来说，对于一个带有动态参数的路径 `/users/:id`，在 `/users/1` 和 `/users/2` 之间跳转的时候，
+// 由于会渲染同样的 `UserDetails` 组件，因此组件实例会被复用。而这个钩子就会在这个情况下被调用。
+// 因为在这种情况发生的时候，组件已经挂载好了，导航守卫可以访问组件实例 `this`
 function extractUpdateHooks (updated: Array<RouteRecord>): Array<?Function> {
   return extractGuards(updated, 'beforeRouteUpdate', bindGuard)
 }
 
+// 绑定到vue实例上
 function bindGuard (guard: NavigationGuard, instance: ?_Vue): ?NavigationGuard {
   if (instance) {
     return function boundRouteGuard () {
@@ -374,11 +382,16 @@ function bindGuard (guard: NavigationGuard, instance: ?_Vue): ?NavigationGuard {
   }
 }
 
+// 组件:beforeRouteEnter
+// 在渲染该组件的对应路由被验证前调用
+// 不能获取组件实例 `this` ！
+// 因为当守卫执行时，组件实例还没被创建！
 function extractEnterGuards (activated: Array<RouteRecord>): Array<?Function> {
   return extractGuards(
     activated,
     'beforeRouteEnter',
     (guard, _, match, key) => {
+      // 不能取到this
       return bindEnterGuard(guard, match, key)
     }
   )
