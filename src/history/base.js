@@ -237,6 +237,7 @@ export class History {
     runQueue(queue, iterator, () => {
       // wait until async components are resolved before
       // extracting in-component enter guards
+      // 上面的queue执行完了
       // 在激活的组件里调用组件的beforeRouteEnter
       const enterGuards = extractEnterGuards(activated)
       // 调用全局的 beforeResolve
@@ -246,7 +247,7 @@ export class History {
           return abort(createNavigationCancelledError(current, route))
         }
         this.pending = null
-        onComplete(route)
+        onComplete(route) // afterHooks
         if (this.router.app) {
           this.router.app.$nextTick(() => {
             handleRouteEntered(route)

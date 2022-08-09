@@ -53,7 +53,7 @@ declare type RouteConfig = {
   path: string;
   name?: string;
   component?: any;
-  components?: Dictionary<any>;
+  components?: Dictionary<any>; // 命名视图
   redirect?: RedirectOption;
   alias?: string | Array<string>;
   children?: Array<RouteConfig>;
