@@ -19,6 +19,8 @@ export function install (Vue) {
       isDef((i = i.data)) &&
       isDef((i = i.registerRouteInstance))
     ) {
+      // vm 是 RouteView 实例
+      // i 是 registerRouteInstance，挂在data上
       i(vm, callVal)
     }
   }

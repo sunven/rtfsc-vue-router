@@ -250,6 +250,7 @@ export class History {
         onComplete(route) // afterHooks
         if (this.router.app) {
           this.router.app.$nextTick(() => {
+            // 执行 beforeRouteEnter 中 传给next的方法
             handleRouteEntered(route)
           })
         }
@@ -259,6 +260,7 @@ export class History {
 
   updateRoute (route: Route) {
     this.current = route
+    // 即把 route 赋值给 _route,触发 setter，从而组件更新
     this.cb && this.cb(route)
   }
 
@@ -398,6 +400,9 @@ function extractEnterGuards (activated: Array<RouteRecord>): Array<?Function> {
   )
 }
 
+// beforeRouteEnter 执行后，将next的参数存入push
+// 因为beforeRouteEnter中不能访问this，没有next的参数是一个方法
+// 最终会将组件的实例传给这个方法
 function bindEnterGuard (
   guard: NavigationGuard,
   match: RouteRecord,

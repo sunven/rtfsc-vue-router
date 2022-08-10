@@ -4,7 +4,7 @@ import { handleRouteEntered } from '../util/route'
 
 export default {
   name: 'RouterView',
-  functional: true,
+  functional: true, // functional组件
   props: {
     name: {
       type: String,
@@ -67,8 +67,7 @@ export default {
     // cache component
     cache[name] = { component }
 
-    // attach instance registration hook
-    // this will be called in the instance's injected lifecycle hooks
+    // 附加实例注册钩子，这将在实例的注入生命周期钩子中调用
     data.registerRouteInstance = (vm, val) => {
       // val could be undefined for unregistration
       const current = matched.instances[name]
